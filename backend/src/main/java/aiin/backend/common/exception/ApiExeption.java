@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public class ApiExeption extends RuntimeException {
+
 	private final HttpStatus httpStatus;
 	private final String code;
 
@@ -19,7 +20,11 @@ public class ApiExeption extends RuntimeException {
 		return new ApiExeption(errorCode.getHttpStatus(), errorCode.getMessage(), errorCode.getCode());
 	}
 
-	public static ApiExeption of(HttpStatus httpStatus, String message, String code) {
+	public static ApiExeption of(
+		HttpStatus httpStatus,
+		String message,
+		String code
+	) {
 		return new ApiExeption(httpStatus, message, code);
 	}
 }

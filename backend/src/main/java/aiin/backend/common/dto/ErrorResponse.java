@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse extends BaseResponse {
+
 	private final String message;
 	private final List<String> reasons;
 
