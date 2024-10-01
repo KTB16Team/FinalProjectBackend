@@ -16,18 +16,21 @@ public class ErrorResponse extends BaseResponse {
 
 	private final String message;
 	private final List<String> reasons;
+	private final String code;
 
-	private ErrorResponse(HttpStatus status, String message, List<String> reasons) {
+	private ErrorResponse(HttpStatus status, String message, List<String> reasons, String code) {
 		super(status);
 		this.message = message;
 		this.reasons = reasons;
+		this.code = code;
 	}
 
 	public static ErrorResponse of(ErrorCode errorCode, List<String> reasons) {
 		HttpStatus status = errorCode.getHttpStatus();
 		String message = errorCode.getMessage();
+		String code = errorCode.getCode();
 
-		return new ErrorResponse(status, message, reasons);
+		return new ErrorResponse(status, message, reasons,code);
 	}
 
 }
