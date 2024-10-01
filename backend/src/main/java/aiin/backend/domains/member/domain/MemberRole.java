@@ -1,4 +1,4 @@
-package aiin.backend.domains.member;
+package aiin.backend.domains.member.domain;
 
 import lombok.Getter;
 
