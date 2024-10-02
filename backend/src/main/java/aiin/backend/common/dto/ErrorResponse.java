@@ -37,6 +37,11 @@ public class ErrorResponse extends BaseResponse {
 		return new ErrorResponse(status, message, code, null);
 	}
 
+	public static ErrorResponse of(HttpStatus httpStatus, String message, String code) {
+
+		return new ErrorResponse(httpStatus, message, code, null);
+	}
+
 	public static ErrorResponse of(ErrorCode errorCode, List<String> reasons) {
 		HttpStatus status = errorCode.getHttpStatus();
 		String message = errorCode.getMessage();
