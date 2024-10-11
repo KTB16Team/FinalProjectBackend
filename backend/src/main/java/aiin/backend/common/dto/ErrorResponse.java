@@ -1,14 +1,13 @@
 package aiin.backend.common.dto;
 
-import aiin.backend.common.exception.ErrorCode;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import lombok.Getter;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import aiin.backend.common.exception.ErrorCode;
+import lombok.Getter;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -36,6 +35,11 @@ public class ErrorResponse extends BaseResponse {
 		String code = errorCode.getCode();
 
 		return new ErrorResponse(status, message, code, null);
+	}
+
+	public static ErrorResponse of(HttpStatus httpStatus, String message, String code) {
+
+		return new ErrorResponse(httpStatus, message, code, null);
 	}
 
 	public static ErrorResponse of(ErrorCode errorCode, List<String> reasons) {

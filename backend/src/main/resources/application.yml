@@ -2,3 +2,12 @@ spring:
   application:
     name:
       "backend"
+  profiles:
+    group:
+      dev-env:
+        - common
+        - dev
+      prod-env:
+        - common
+        - prod
+    active: dev-env
