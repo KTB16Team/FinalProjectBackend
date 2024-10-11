@@ -61,12 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			log.info("refresh토큰 인증 실패");
 			throw ApiException.from(INVALID_REFRESH_TOKEN);
 		} else if (accessToken != null && jwtTokenProvider.isTokenValid(accessToken)) {
-
-			//토큰이 logout된 토큰인지 검사
-			if (jwtTokenProvider.isLogout(accessToken)) {
-				log.info("logout된 accessToken으로 인증 실패");
-				throw ApiException.from(INVALID_ACCESS_TOKEN);
-			}
+			checkLogoutToken(accessToken);
 
 			log.info("access토큰 인증 성공");
 			Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
@@ -81,9 +76,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 	}
 
+	// contextHolder에 인증정보 저장
 	private void saveAuthentication(Authentication authentication) {
 		SecurityContext context = SecurityContextHolder.createEmptyContext();
 		context.setAuthentication(authentication);
 		SecurityContextHolder.setContext(context);
+	}
+
+	//토큰이 logout된 토큰인지 검사
+	private void checkLogoutToken(String accessToken) {
+		if (jwtTokenProvider.isLogout(accessToken)) {
+			log.info("logout된 accessToken으로 인증 실패");
+			throw ApiException.from(INVALID_ACCESS_TOKEN);
+		}
 	}
 }
