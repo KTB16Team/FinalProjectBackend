@@ -9,11 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     env:
       working-directory: ./backend
-
+    permissions:
+      contents: read
     steps:
       # 소스 코드 체크아웃 후 backend 디렉토리로 이동
       - uses: actions/checkout@v4
@@ -24,17 +23,14 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-        working-directory: backend
 
       # Gradle 실행 권한 설정
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
-        working-directory: backend
 
       # Gradle 빌드 실행
       - name: Build with Gradle Wrapper
         run: ./gradlew build
-        working-directory: backend
 
 
 
