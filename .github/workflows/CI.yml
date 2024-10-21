@@ -23,14 +23,17 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+        working-directory: ${{ env.working-directory }}
 
       # Gradle 실행 권한 설정
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
+        working-directory: ${{ env.working-directory }}
 
       # Gradle 빌드 실행
       - name: Build with Gradle Wrapper
         run: ./gradlew build
+        working-directory: ${{ env.working-directory }}
 
 
 
