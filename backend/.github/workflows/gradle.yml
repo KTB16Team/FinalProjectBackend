@@ -25,10 +25,10 @@ jobs:
 
       # backend 디렉토리로 이동하여 Gradle 빌드 실행(권한 추가 후 빌드)
       - name: Grant execute permission to gradlew
-        run: chmod +x backend/gradlew
+        run: chmod +x gradlew
 
       - name: Build with Gradle Wrapper
-        run: ./backend/gradlew build
+        run: ./gradlew build
 
 
 
