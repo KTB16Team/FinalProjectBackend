@@ -11,15 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      working-directory: ./backend
 
     steps:
       # 소스 코드 체크아웃 후 backend 디렉토리로 이동
       - uses: actions/checkout@v4
-
-      # backend 디렉토리를 루트 디렉토리로 설정
-      - name: Change directory to backend
-        run: cd backend
-        working-directory: backend
 
       # JDK 17 설정
       - name: Set up JDK 17
