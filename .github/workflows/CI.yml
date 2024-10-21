@@ -22,7 +22,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-        working-directory: ${{ secrets.WORKING_DIRECTORY }}
 
       # Gradle 실행 권한 설정
       - name: Grant execute permission to gradlew
