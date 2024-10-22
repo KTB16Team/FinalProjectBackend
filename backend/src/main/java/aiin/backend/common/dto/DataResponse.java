@@ -1,4 +1,4 @@
-package aiin.backend.util.dto;
+package aiin.backend.common.dto;
 
 import org.springframework.http.HttpStatus;
 
@@ -25,5 +25,5 @@ public class DataResponse<T> extends BaseResponse {
 		return new DataResponse<>(HttpStatus.OK, null);
 	}
 	public static <T> DataResponse<Void> created() { return new DataResponse<>(HttpStatus.CREATED, null); }
-	public static <T> DataResponse<Void> delete() { return new DataResponse<>(HttpStatus.NO_CONTENT, null); }
+	public static <T> DataResponse<Void> noContent() { return new DataResponse<>(HttpStatus.NO_CONTENT, null); }
 }

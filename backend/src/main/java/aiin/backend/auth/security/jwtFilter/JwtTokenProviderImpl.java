@@ -1,15 +1,14 @@
 package aiin.backend.auth.security.jwtFilter;
 
-import static aiin.backend.auth.exception.ErrorCode.*;
+import static aiin.backend.common.exception.ErrorCode.*;
 
-import aiin.backend.util.dto.DataResponse;
-import aiin.backend.auth.exception.ApiException;
+import aiin.backend.common.dto.DataResponse;
+import aiin.backend.common.exception.ApiException;
 import aiin.backend.auth.properties.JwtProperties;
 import aiin.backend.util.responseWriter.ResponseWriter;
 import aiin.backend.member.entity.Member;
 import aiin.backend.member.entity.RefreshToken;
 import aiin.backend.member.repository.MemberRepository;
-import aiin.backend.member.service.LogoutService;
 import aiin.backend.member.service.RefreshTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -43,19 +42,16 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
 	private final JwtProperties jwtProperties;
 	private final MemberRepository memberRepository;
 	private final Key key;
-	private final LogoutService logoutService;
 	private final RefreshTokenService refreshTokenService;
 
 	public JwtTokenProviderImpl(
 		JwtProperties jwtProperties,
 		MemberRepository memberRepository,
-		LogoutService logoutService,
 		RefreshTokenService refreshTokenService
 	) {
 		this.jwtProperties = jwtProperties;
 		this.memberRepository = memberRepository;
 		this.key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
-		this.logoutService = logoutService;
 		this.refreshTokenService = refreshTokenService;
 	}
 
@@ -197,7 +193,7 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
 		Long memberId = extractMemberId(refreshToken)
 				.orElseThrow(() -> ApiException.from(INVALID_REFRESH_TOKEN));
 
-		if(refreshTokenService.existsByAccessToken(accessToken)){
+		if(!isRefreshTokenValid(accessToken)){
 			throw ApiException.from(INVALID_REFRESH_TOKEN);
 		}
 
@@ -210,7 +206,14 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
 	}
 
 	@Override
+	public boolean isRefreshTokenValid(String accessToken){
+
+		return !refreshTokenService.existsByAccessToken(accessToken);
+	}
+
+	@Override
 	public boolean isLogout(String accessToken) {
-		return !logoutService.existsByAccessToken(accessToken);
+
+		return refreshTokenService.existsByAccessToken(accessToken);
 	}
 }

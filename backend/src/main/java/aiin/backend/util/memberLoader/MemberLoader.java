@@ -1,13 +1,13 @@
-package aiin.backend.member.memberLoader;
+package aiin.backend.util.memberLoader;
 
 
-import static aiin.backend.auth.exception.ErrorCode.*;
+import static aiin.backend.common.exception.ErrorCode.*;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import aiin.backend.auth.exception.ApiException;
+import aiin.backend.common.exception.ApiException;
 import aiin.backend.member.entity.Member;
 import aiin.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package aiin.backend.auth.security.loginFilter;
 
-import static aiin.backend.auth.exception.ErrorCode.*;
+import static aiin.backend.common.exception.ErrorCode.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import aiin.backend.auth.security.jwtFilter.JwtTokenProvider;
-import aiin.backend.util.dto.DataResponse;
-import aiin.backend.auth.exception.ApiException;
+import aiin.backend.common.dto.DataResponse;
+import aiin.backend.common.exception.ApiException;
 import aiin.backend.util.responseWriter.ResponseWriter;
 import aiin.backend.member.entity.Member;
 import aiin.backend.member.service.MemberService;
@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final static String EMAIL_PARAMETER = "email";
-	private final static String PW_PARAMETER = "pw";
+	private final static String PW_PARAMETER = "password";
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final MemberService memberService;

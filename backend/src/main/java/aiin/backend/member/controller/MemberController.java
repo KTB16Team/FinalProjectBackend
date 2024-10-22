@@ -9,14 +9,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import aiin.backend.member.dto.DeleteRequest;
 import aiin.backend.member.dto.SignUpRequest;
-import aiin.backend.util.dto.DataResponse;
+import aiin.backend.common.dto.DataResponse;
 import aiin.backend.auth.security.jwtFilter.JwtTokenProvider;
-import aiin.backend.member.memberLoader.MemberLoader;
+import aiin.backend.util.memberLoader.MemberLoader;
 import aiin.backend.member.entity.Member;
 import aiin.backend.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
@@ -31,11 +33,12 @@ public class MemberController {
 		Member member = memberLoader.getMember();
 		String accessToken = jwtTokenProvider.extractAccessToken(request).orElse(null);
 		String refreshToken = jwtTokenProvider.extractRefreshToken(request).orElse(null);
-
+		log.info("logout member access token: {} refresh token: {}", accessToken, refreshToken);
 		memberService.logoutMember(member, accessToken, refreshToken);
 
 		return ResponseEntity
-			.ok(DataResponse.ok());
+			.status(HttpStatus.CREATED)
+			.body(DataResponse.created());
 	}
 
 	@PostMapping("/signup")
@@ -52,7 +55,7 @@ public class MemberController {
 		memberService.deleteMember(deleteRequest);
 
 		return ResponseEntity
-			.status(HttpStatus.CREATED)
-			.body(DataResponse.ok());
+			.status(HttpStatus.NO_CONTENT)
+			.body(DataResponse.noContent());
 	}
 }

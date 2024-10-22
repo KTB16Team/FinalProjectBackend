@@ -1,8 +1,8 @@
 package aiin.backend.auth.security.exceptionHandlingFilter;
 
-import aiin.backend.util.dto.ErrorResponse;
-import aiin.backend.auth.exception.ApiException;
-import aiin.backend.auth.exception.ErrorCode;
+import aiin.backend.common.dto.ErrorResponse;
+import aiin.backend.common.exception.ApiException;
+import aiin.backend.common.exception.ErrorCode;
 import aiin.backend.util.responseWriter.ResponseWriter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

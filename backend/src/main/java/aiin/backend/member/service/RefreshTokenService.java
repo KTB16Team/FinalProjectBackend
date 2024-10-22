@@ -31,5 +31,5 @@ public class RefreshTokenService {
 		refreshTokenRepository.deleteByAccessToken(accessToken);
 	}
 
-	public Boolean existsByAccessToken(String accessToken) { return refreshTokenRepository.existsByAccessToken(accessToken); }
+	public boolean existsByAccessToken(String accessToken) { return refreshTokenRepository.existsByAccessToken(accessToken); }
 }
