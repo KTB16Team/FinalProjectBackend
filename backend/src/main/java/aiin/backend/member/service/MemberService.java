@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.ErrorResponseException;
 
 import java.util.Optional;
 
@@ -34,6 +35,10 @@ public class MemberService {
     // 회원 가입
     @Transactional
     public void signUp(SignUpRequest signUpRequest) {
+        if(isDuplicateEmail(signUpRequest.email())){
+            throw ApiException.from(ErrorCode.EMAIL_DUPLICATE);
+        }
+
         Member member = memberMapper.signUpMemberEntity(signUpRequest);
         memberRepository.save(member);
     }
@@ -55,5 +60,9 @@ public class MemberService {
             .orElseThrow(()-> ApiException.from(ErrorCode.MEMBER_NOT_FOUND));
 
         memberRepository.delete(member);
+    }
+
+    protected boolean isDuplicateEmail(String email) {
+        return memberRepository.findByEmail(email).isPresent();
     }
 }
