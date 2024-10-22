@@ -10,7 +10,8 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorCode {
 	//400
 	BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.", "COMMON-001"),
-	INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "요청 파라미터가 잘 못 되었습니다.", "COMMON-002"),
+	INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "요청 파라미터가 잘못 되었습니다.", "COMMON-002"),
+	INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀 번호가 잘못 되었습니다.", "COMMON-002"),
 
 	//401
 	UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.", "COMMON-003"),
