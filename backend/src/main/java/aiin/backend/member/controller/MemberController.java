@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,11 +31,10 @@ public class MemberController {
 
 	@PostMapping("/logout")
 	public ResponseEntity<DataResponse<Void>> logoutMember(HttpServletRequest request) {
-		Member member = memberLoader.getMember();
 		String accessToken = jwtTokenProvider.extractAccessToken(request).orElse(null);
 		String refreshToken = jwtTokenProvider.extractRefreshToken(request).orElse(null);
 		log.info("logout member access token: {} refresh token: {}", accessToken, refreshToken);
-		memberService.logoutMember(member, accessToken, refreshToken);
+		memberService.logoutMember(accessToken, refreshToken);
 
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
@@ -51,8 +51,10 @@ public class MemberController {
 	}
 
 	@PostMapping("/delete")
-	public ResponseEntity<DataResponse<Void>> deleteMember(@RequestBody DeleteRequest deleteRequest) {
-		memberService.deleteMember(deleteRequest);
+	public ResponseEntity<DataResponse<Void>> deleteMember(
+		@RequestHeader("Authorization") String accessToken,
+		@RequestBody DeleteRequest deleteRequest) {
+		memberService.deleteMember(accessToken, deleteRequest);
 
 		return ResponseEntity
 			.status(HttpStatus.NO_CONTENT)

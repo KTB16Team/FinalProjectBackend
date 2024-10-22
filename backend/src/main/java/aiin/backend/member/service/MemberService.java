@@ -1,5 +1,6 @@
 package aiin.backend.member.service;
 
+import aiin.backend.auth.security.jwtFilter.JwtTokenProvider;
 import aiin.backend.common.exception.ApiException;
 import aiin.backend.common.exception.ErrorCode;
 import aiin.backend.member.dto.DeleteRequest;
@@ -11,6 +12,7 @@ import aiin.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.ErrorResponseException;
@@ -26,6 +28,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RefreshTokenService refreshTokenService;
     private final MemberMapper memberMapper;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     // 이메일로 멤버 조회
     public Optional<Member> findByEmail(String email) {
@@ -46,7 +50,7 @@ public class MemberService {
 
     //로그아웃
     @Transactional
-    public void logoutMember(Member member, String accessToken, String refreshToken) {
+    public void logoutMember(String accessToken, String refreshToken) {
         // 회원의 refreshToken 만료 처리
         RefreshToken expiredToken = new RefreshToken(accessToken, refreshToken);
         refreshTokenService.save(expiredToken);
@@ -54,15 +58,27 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(DeleteRequest deleteRequest) {
+    public void deleteMember(String accessToken, DeleteRequest deleteRequest) {
+        Long memberId = jwtTokenProvider
+            .extractMemberId(accessToken)
+            .orElseThrow(() -> ApiException.from(ErrorCode.INVALID_ACCESS_TOKEN));
+
         Member member = memberRepository
-            .findByEmail(deleteRequest.email())
-            .orElseThrow(()-> ApiException.from(ErrorCode.MEMBER_NOT_FOUND));
+            .findById(memberId)
+            .orElseThrow(() -> ApiException.from(ErrorCode.MEMBER_NOT_FOUND));
+
+        if(!isValid(deleteRequest.password(), member.getPassword())){
+            throw ApiException.from(ErrorCode.INVALID_PASSWORD);
+        }
 
         memberRepository.delete(member);
     }
 
     protected boolean isDuplicateEmail(String email) {
         return memberRepository.findByEmail(email).isPresent();
+    }
+
+    protected boolean isValid(String password, String encodedPassword) {
+        return passwordEncoder.matches(password, encodedPassword);
     }
 }
