@@ -4,7 +4,9 @@ import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import aiin.backend.dispute.entity.Dispute;
 import aiin.backend.member.model.Gender;
 import aiin.backend.member.model.MemberRole;
 import aiin.backend.member.model.Provider;
@@ -19,6 +21,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
@@ -67,6 +70,9 @@ public class Member extends BaseEntity {
 
 	@Column(nullable = false, name = "birth_date")
 	private LocalDate birthDate;
+
+	@OneToMany(mappedBy = "member")
+	private List<Dispute> disputes;
 
 	@Builder
 	private Member(String username, String email, String password, MemberRole memberRole, Gender gender, Provider provider, String phoneNumber, LocalDate birthDate) {

@@ -9,7 +9,6 @@ import aiin.backend.util.responseWriter.ResponseWriter;
 import aiin.backend.member.entity.Member;
 import aiin.backend.member.entity.RefreshToken;
 import aiin.backend.member.repository.MemberRepository;
-import aiin.backend.member.service.LogoutService;
 import aiin.backend.member.service.RefreshTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -43,19 +42,16 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
 	private final JwtProperties jwtProperties;
 	private final MemberRepository memberRepository;
 	private final Key key;
-	private final LogoutService logoutService;
 	private final RefreshTokenService refreshTokenService;
 
 	public JwtTokenProviderImpl(
 		JwtProperties jwtProperties,
 		MemberRepository memberRepository,
-		LogoutService logoutService,
 		RefreshTokenService refreshTokenService
 	) {
 		this.jwtProperties = jwtProperties;
 		this.memberRepository = memberRepository;
 		this.key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
-		this.logoutService = logoutService;
 		this.refreshTokenService = refreshTokenService;
 	}
 
@@ -211,11 +207,13 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
 
 	@Override
 	public boolean isRefreshTokenValid(String accessToken){
+
 		return !refreshTokenService.existsByAccessToken(accessToken);
 	}
 
 	@Override
 	public boolean isLogout(String accessToken) {
-		return logoutService.existsByAccessToken(accessToken);
+
+		return refreshTokenService.existsByAccessToken(accessToken);
 	}
 }
