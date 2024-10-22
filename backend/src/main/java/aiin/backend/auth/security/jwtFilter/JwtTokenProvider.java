@@ -38,5 +38,7 @@ public interface JwtTokenProvider {
 
 	void checkRefreshTokenAndReIssueAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken);
 
+	boolean isRefreshTokenValid(String refreshToken);
+	
 	boolean isLogout(String accessToken);
 }

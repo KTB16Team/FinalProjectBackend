@@ -1,13 +1,39 @@
 spring:
-  application:
-    name:
-      "backend"
   profiles:
-    group:
-      dev-env:
-        - common
-        - dev
-      prod-env:
-        - common
-        - prod
-    active: dev-env
+    default: local
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+jwt:
+  issuer: aiin.official
+  secret: wqdwmkfokfp323l3w3w3ekwpt3698m3o-ir2PJO=WmwQ3k0pew30i543t3WQEWQEw32462ojltgr0943nudskl3poqmWqwp2gu38u3W
+  access:
+    expiration: 3600
+    header: Authorization
+  refresh:
+    expiration: 1209600
+    header: X-Refresh-Token
+cors:
+  requireCredential: true
+  allowedOrigins: >
+    http://localhost:3000,
+  allowedMethods: GET, POST, PATCH, DELETE, PUT, OPTIONS
+  allowedHeaders: "*"
+  allowedUrls: /**
+security:
+  permitUrls: >
+    /api/members/login, 
+    /api-docs, 
+    /swagger-ui.html, 
+    /api-docs/**, 
+    /swagger-ui/**,
+    /api/members/signup

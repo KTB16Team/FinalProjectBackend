@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatusCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import aiin.backend.util.dto.BaseResponse;
+import aiin.backend.common.dto.BaseResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ResponseWriter {

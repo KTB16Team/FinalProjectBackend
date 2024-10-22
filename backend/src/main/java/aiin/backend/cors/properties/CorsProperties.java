@@ -1,5 +1,6 @@
-package aiin.backend.auth.properties;
+package aiin.backend.cors.properties;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

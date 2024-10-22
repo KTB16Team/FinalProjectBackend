@@ -1,4 +1,4 @@
-package aiin.backend.util.entity;
+package aiin.backend.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

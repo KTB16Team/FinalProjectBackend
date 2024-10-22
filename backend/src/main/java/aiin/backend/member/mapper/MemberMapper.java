@@ -1,21 +1,24 @@
 package aiin.backend.member.mapper;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import aiin.backend.member.dto.SignUpRequest;
 import aiin.backend.member.entity.Member;
 import aiin.backend.member.model.MemberRole;
 import aiin.backend.member.model.Provider;
-
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class MemberMapper {
+	private final PasswordEncoder passwordEncoder;
 
-	public static Member signUpMemberEntity(SignUpRequest signUpRequest){
+	public Member signUpMemberEntity(SignUpRequest signUpRequest){
 		return Member
 			.builder()
 			.username(signUpRequest.username())
-			.password(signUpRequest.password())
+			.password(passwordEncoder.encode(signUpRequest.password()))
 			.email(signUpRequest.email())
 			.memberRole(MemberRole.USER)
 			.gender(signUpRequest.gender())

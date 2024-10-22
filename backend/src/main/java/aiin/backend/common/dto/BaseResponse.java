@@ -1,4 +1,4 @@
-package aiin.backend.util.dto;
+package aiin.backend.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

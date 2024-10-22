@@ -1,9 +1,9 @@
 package aiin.backend.auth.security.jwtFilter;
 
-import static aiin.backend.auth.exception.ErrorCode.*;
+import static aiin.backend.common.exception.ErrorCode.*;
 
-import aiin.backend.auth.exception.ApiException;
-import aiin.backend.auth.exception.ErrorCode;
+import aiin.backend.common.exception.ApiException;
+import aiin.backend.common.exception.ErrorCode;
 import aiin.backend.auth.properties.SecurityProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -54,15 +54,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		//3. access토큰이 존재하며, accessToken이 유효하면 인증
 		//4. access토큰이 존재하며, accesToken이 유효하지 않으면 에러 리턴
 		//5. 그 외 모든 경우는 에러 리턴
-		if (refreshToken != null && jwtTokenProvider.isTokenValid(refreshToken)) {
+
+		if (refreshToken != null && jwtTokenProvider.isTokenValid(refreshToken) && request.getRequestURI().matches("^\\/reissue$")) {
 			log.info("refresh토큰 인증 성공");
 			jwtTokenProvider.checkRefreshTokenAndReIssueAccessAndRefreshToken(response, accessToken, refreshToken);
 		} else if (refreshToken != null && !jwtTokenProvider.isTokenValid(refreshToken)) {
 			log.info("refresh토큰 인증 실패");
 			throw ApiException.from(INVALID_REFRESH_TOKEN);
+		} else if (accessToken != null && !jwtTokenProvider.isRefreshTokenValid(accessToken)) {
+			log.info("access토큰 만료(BlackList)");
+			throw ApiException.from(INVALID_REFRESH_TOKEN);
 		} else if (accessToken != null && jwtTokenProvider.isTokenValid(accessToken)) {
 			checkLogoutToken(accessToken);
-
 			log.info("access토큰 인증 성공");
 			Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
 			saveAuthentication(authentication);

@@ -1,4 +1,4 @@
-package aiin.backend.util.dto;
+package aiin.backend.common.dto;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import aiin.backend.auth.exception.ErrorCode;
+import aiin.backend.common.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter

@@ -1,4 +1,4 @@
-package aiin.backend.auth.exception;
+package aiin.backend.common.exception;
 
 import lombok.Getter;
 
