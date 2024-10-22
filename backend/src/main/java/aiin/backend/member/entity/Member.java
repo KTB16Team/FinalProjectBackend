@@ -3,7 +3,7 @@ package aiin.backend.member.entity;
 import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import aiin.backend.dispute.entity.Dispute;
@@ -11,6 +11,8 @@ import aiin.backend.member.model.Gender;
 import aiin.backend.member.model.MemberRole;
 import aiin.backend.member.model.Provider;
 import aiin.backend.common.entity.BaseEntity;
+import aiin.backend.openJury.entity.comment.Comment;
+import aiin.backend.openJury.entity.post.Post;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,7 +66,6 @@ public class Member extends BaseEntity {
 	@JoinColumn(name = "profile_image_id", referencedColumnName = "profile_id")
 	private ProfileImage profileImage;
 
-
 	@Column(nullable = false, name = "phone_number")
 	private String phoneNumber;
 
@@ -73,6 +74,12 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member")
 	private List<Dispute> disputes;
+
+	@OneToMany(mappedBy = "author")
+	private List<Post> posts = new ArrayList<>();
+
+	@OneToMany(mappedBy = "author")
+	private List<Comment> comments = new ArrayList<>();
 
 	@Builder
 	private Member(String username, String email, String password, MemberRole memberRole, Gender gender, Provider provider, String phoneNumber, LocalDate birthDate) {
