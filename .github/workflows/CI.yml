@@ -28,7 +28,17 @@ jobs:
         run: chmod +x gradlew
         working-directory: ${{ secrets.WORKING_DIRECTORY }}
 
+      # 환경 변수 설정
+      - name: Set environment variables
+        run: echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
+      - run: echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
+      - run: echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+
       # Gradle 빌드 실행
       - name: Build with Gradle Wrapper
         run: ./gradlew build
         working-directory: ${{ secrets.WORKING_DIRECTORY }}
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
