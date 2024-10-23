@@ -33,6 +33,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      # YML 파일 생성
+      - name: YML 파일 생성
+        working-directory: .
+        run: |
+          # backend 디렉토리 생성
+          mkdir -p backend/src/main/resources/
+          
+          # application.yml 파일들 생성
+          echo "${{ secrets.APPLICATION_DEFAULT }}" | base64 --decode > backend/src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_DEV }}" | base64 --decode > backend/src/main/resources/application-dev.yml
+          echo "${{ secrets.APPLICATION_LOCAL }}" | base64 --decode > backend/src/main/resources/application-local.yml
+
       # Gradle 실행 권한 설정
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
@@ -40,7 +52,7 @@ jobs:
 
       # Gradle 빌드 및 테스트 실행 (로컬 컨테이너의 MySQL 사용)
       - name: Build and Test with Gradle
-        run: ./gradlew build -Dspring.profiles.active=ci
+        run: ./gradlew build -Dspring.profiles.active=local
         working-directory: ${{ secrets.WORKING_DIRECTORY }}
         env:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/aimo
@@ -66,4 +78,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             if pgrep -f "app.jar"; then pkill -f "app.jar"; fi
-            nohup java -jar /home/ubuntu/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &
+            nohup java -jar /home/ubuntu/app.jar --spring.profiles.active=dev > /dev/null 2>&1 &
