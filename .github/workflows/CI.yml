@@ -52,7 +52,7 @@ jobs:
 
       # Gradle 빌드 및 테스트 실행 (로컬 컨테이너의 MySQL 사용)
       - name: Build and Test with Gradle
-        run: ./gradlew build -Dspring.profiles.active=dev
+        run: ./gradlew build -Dspring.profiles.active=local
         working-directory: ${{ secrets.WORKING_DIRECTORY }}
         env:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/aimo
@@ -78,4 +78,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             if pgrep -f "app.jar"; then pkill -f "app.jar"; fi
-            nohup java -jar /home/ubuntu/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &
+            nohup java -jar /home/ubuntu/app.jar --spring.profiles.active=dev > /dev/null 2>&1 &
