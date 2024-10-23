@@ -1,4 +1,4 @@
-name: BE CI/CD with MySQL
+name: BE CI/CD with MySQL and EC2 Deploy
 
 on:
   push:
@@ -38,11 +38,32 @@ jobs:
         run: chmod +x gradlew
         working-directory: ${{ secrets.WORKING_DIRECTORY }}
 
-      # Gradle 빌드 및 테스트 실행
+      # Gradle 빌드 및 테스트 실행 (로컬 컨테이너의 MySQL 사용)
       - name: Build and Test with Gradle
         run: ./gradlew build -Dspring.profiles.active=ci
         working-directory: ${{ secrets.WORKING_DIRECTORY }}
         env:
-          SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/aimo
+          SPRING_DATASOURCE_USERNAME: admin
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      # 빌드된 JAR 파일을 EC2로 복사
+      - name: Copy JAR file to EC2
+        uses: appleboy/scp-action@v0.1.1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: ${{ secrets.WORKING_DIRECTORY }}/build/libs/*.jar
+          target: /home/ubuntu/
+
+      # EC2에서 애플리케이션 실행 (RDS 연결)
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            if pgrep -f "app.jar"; then pkill -f "app.jar"; fi
+            nohup java -jar /home/ubuntu/app.jar --spring.profiles.active=prod > /dev/null 2>&1 &
