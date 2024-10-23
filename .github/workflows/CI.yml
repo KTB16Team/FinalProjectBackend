@@ -1,4 +1,4 @@
-name: BE CI/CD
+name: BE CI/CD with MySQL
 
 on:
   push:
@@ -7,13 +7,23 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  build:
+  backend-CI:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+
+    services:
+      db:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: aimo
+          MYSQL_USER: ${{ secrets.DB_USERNAME }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping -h localhost" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      # 소스 코드 체크아웃 후 backend 디렉토리로 이동
+      # 소스 코드 체크아웃
       - uses: actions/checkout@v4
 
       # JDK 17 설정
@@ -28,17 +38,11 @@ jobs:
         run: chmod +x gradlew
         working-directory: ${{ secrets.WORKING_DIRECTORY }}
 
-      # 환경 변수 설정
-      - name: Set environment variables
-        run: echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
-      - run: echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
-      - run: echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
-
-      # Gradle 빌드 실행
-      - name: Build with Gradle Wrapper
-        run: ./gradlew build
+      # Gradle 빌드 및 테스트 실행
+      - name: Build and Test with Gradle
+        run: ./gradlew build -Dspring.profiles.active=ci
         working-directory: ${{ secrets.WORKING_DIRECTORY }}
         env:
-          DB_URL: ${{ secrets.DB_URL }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
